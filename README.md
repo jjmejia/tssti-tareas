@@ -31,12 +31,19 @@ Se desea que haga lo siguiente:
 
 Siga las siguientes instrucciones para ejecutar este proyecto correctamente:
 
-* Habilite PHP en su servidor web (versión sugerida: *8.1.4* o superior).
-* Descargue el contenido de este repositorio en un directorio del servidor web (nombre sugeridos: *tareas*).
+* Habilite PHP en su servidor web (versión sugerida: *8.1* o superior). En caso de necesitar información sobre
+  cómo habilitar PHP sobre un servidor web Apache, puede consultar esta página:
+  [PHP con Apache sobre Windows](https://micode-manager.blogspot.com/2023/01/php-con-apache-sobre-windows.html).
+* Descargue el contenido de este repositorio en un directorio del servidor web (nombre sugerido: *tareas*).
 * Cree una base de datos en un servidor mariaDB o mySQL (nombre sugerido para la base de datos: *sti_tareas*).
 * Cree las tablas requeridas usando el SQL contenido en el archivo `bdd.sql`.
 * Realice una copia o renombre el archivo `lib/data/bdd.ini-ejemplo` con nombre `lib/data/bdd.ini`. Editelo
-  con los datos de acceso a la base de datos.
+  con los datos de acceso a la base de datos. El archivo debe contener la siguiente información:
+	 * **servidor**: Path o nombre del servidor donde se encuentra el motor de base de datos.
+	 * **bdd**: Nombre dado a la base de datos.
+	 * **usuario**: Nombre del usuario autorizado para consultas.
+	 * **password**: Contraseña.
+* Abra el archivo `index.php` en su navegador web y podrá usar el registro de actividades.
 
 Este ejercicio no usa URLs amigables o direccionamiento dinámico, por lo que no requiere personalizaciones al
 respecto en el servidor web.

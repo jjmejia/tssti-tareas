@@ -101,7 +101,7 @@ class LocalApp {
 		if ($tipo != 'control' && $this->vista != '') { $accion = $this->vista; }
 
 		// Ejecuta archivo de control asociado
-		$basename = str_replace('/', '-', $accion);
+		$basename = str_replace(array('.', '/', "\\", '>', '<'), '-', $accion);
 		if ($basename != '') {
 			// Busca el script de interes asociado a la accion indicada
 			$this->filename = __DIR__ . '/../../' . $tipo . '/' . $basename . '.php';
