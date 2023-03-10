@@ -1,0 +1,135 @@
+body {
+	font-family:"Segoe UI", Arial;
+	font-size:14px;
+}
+h1 {
+	border-bottom:1px solid #ccc;
+	padding-bottom:5px;
+	margin-bottom:5px;
+	font-size: 2rem;
+	color:rgb(33, 37, 41);
+	font-weight:500;
+}
+table {
+	margin:10px 0;
+	border-collapse: collapse;
+}
+td, th {
+	padding:10px;
+}
+th {
+	font-weight:700;
+	text-align:left;
+	border-bottom:3px solid #333;
+}
+td {
+	border-bottom:1px solid rgb(222, 226, 230);
+	max-width:450px;
+}
+td input, td textarea, td select {
+	width:300px;
+	padding:5px;
+	border:1px solid #ccc;
+	border-radius:4px;
+	background:#f4f4f4;
+}
+td select {
+	width:310px;
+}
+td a {
+	text-decoration:none;
+	color:#0d6efd;
+}
+td a img {
+	/* https://stackoverflow.com/questions/22252472/how-can-i-change-the-color-of-an-svg-element#53336754 */
+	filter: invert(30%) sepia(85%) saturate(3647%) hue-rotate(210deg) brightness(102%) contrast(98%);
+}
+td a:visited {
+	color:#0d6efd;
+}
+td a:hover {
+	color:#0a58ca;
+}
+table.nobordes, .nobordes td, .nobordes th {
+	border:none;
+	background:#fff;
+}
+table.nobordes {
+	border-bottom:1px solid #ccc;
+	padding-bottom:20px;
+	margin-top:20px;
+}
+.realizada td {
+	background:#d1e7dd;
+	border-bottom-color:rgb(20, 108, 67);
+	color:#777;
+}
+.vencida td {
+	background: #f8d7da;
+	border-bottom-color:rgb(176, 42, 55);
+}
+.botones {
+	margin:20px 0;
+}
+.botones a, .botones input[type=submit] {
+	display: inline-block;
+	background:#f8f9fa;
+	padding:5px 10px;
+	border:1px solid #777;
+	border-radius:4px;
+	margin:0 5px 0 0;
+	font-weight:700;
+	text-decoration:none;
+	color:#333;
+}
+.botones input[type=submit] {
+	padding:6px 15px;
+	font-weight:600;
+	background:#0d6efd; color:#fff;
+}
+.botones a:visited {
+	color:#333;
+}
+.botones a:hover {
+	background:rgb(211, 212, 213);
+}
+.botones input[type=submit]:hover {
+	background:rgb(11, 94, 215);
+}
+.info {
+	margin:20px 0;
+	padding-top:10px;
+}
+.aviso {
+	border:1px solid rgb(10, 88, 202);
+	color:rgb(10, 88, 202);
+	background:rgb(207, 226, 255);
+	margin:10px 0;
+	padding:10px;
+}
+.errores {
+	border:1px solid rgb(176, 42, 55);
+	color:rgb(176, 42, 55);
+	background:rgb(248, 215, 218);
+	margin:10px 0;
+	padding:10px;
+}
+.errores li {
+	padding-left:25px;
+}
+.sugerencias {
+	margin-bottom:30px;
+}
+.sugerencias li {
+	margin-top:10px;
+}
+.pie {
+	font-size:12px;
+	border-top:1px solid #ccc;
+	color:#777;
+	margin-top:30px;
+	padding-top:10px;
+}
+.pie a {
+	color:#777;
+}
