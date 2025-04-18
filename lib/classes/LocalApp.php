@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas / Clase para manejo de contexto de la aplicación.
  * Inicia una sesión PHP y captura toda salida a pantalla.
@@ -7,11 +8,11 @@
  * @since 1.0 Creado en Marzo 2023
  */
 
-class LocalApp {
-
+class LocalApp
+{
 	private $accion = '';				// Acción asociada al archivo controlador.
 	private $vista = '';				// Acción asociada al archivo de visualización (vista).
-	private $bdd = false;				// Objeto BDDTareas.
+	private $bdd = null;				// Objeto BDDTareas.
 	private $filename = '';				// Archivo de control o vista en uso.
 	private $data = array();			// Datos a usar en las vistas.
 	private $mensaje_sesion = '';		// Mensaje recuperado de $_SESSION.
@@ -21,8 +22,8 @@ class LocalApp {
 	 * Constructor.
 	 * Inicia una sesión PHP y captura toda salida a pantalla.
 	 */
-	public function __construct() {
-
+	public function __construct()
+	{
 		session_start();
 		ob_start();
 	}
@@ -40,16 +41,15 @@ class LocalApp {
 	 *
 	 * @param string $filename Path del archivo .ini.
 	 */
-	public function conectarBDD(string $filename) {
-
+	public function conectarBDD(string $filename)
+	{
 		$this->bdd = new BDDTareas();
 
 		if ($this->bdd->cargarDatosIni($filename)) {
 			if (!$this->bdd->bddConectar()) {
 				mostrar_error('No pudo conectar a la base de datos');
 			}
-		}
-		else {
+		} else {
 			mostrar_error('No pudo cargar configuracion .ini de la base de datos');
 		}
 	}
@@ -61,8 +61,8 @@ class LocalApp {
 	 * @param mixed $defecto Valor a usar si la variable no existe en el arreglo $_REQUEST.
 	 * @return mixed Valor.
 	 */
-	public function post(string $param, mixed $defecto = '') {
-
+	public function post(string $param, mixed $defecto = '')
+	{
 		if (isset($_REQUEST[$param])) {
 			$defecto = $_REQUEST[$param];
 		}
@@ -75,7 +75,8 @@ class LocalApp {
 	 *
 	 * @param string $accion Acción asociada.
 	 */
-	public function setAccion(string $accion) {
+	public function setAccion(string $accion)
+	{
 		$this->accion = $accion;
 	}
 
@@ -84,7 +85,8 @@ class LocalApp {
 	 *
 	 * @param string $accion Acción asociada a la vista.
 	 */
-	public function setVista(string $accion) {
+	public function setVista(string $accion)
+	{
 		$this->vista = $accion;
 	}
 
@@ -95,10 +97,12 @@ class LocalApp {
 	 *    				   "vista" (visualización a pantalla). En cada script puede accederse a las
 	 * 					   propiedades y/o métodos de esta clase mediante "$this".
 	 */
-	public function ejecutarAccion(string $tipo) {
-
+	public function ejecutarAccion(string $tipo)
+	{
 		$accion = $this->accion;
-		if ($tipo != 'control' && $this->vista != '') { $accion = $this->vista; }
+		if ($tipo != 'control' && $this->vista != '') {
+			$accion = $this->vista;
+		}
 
 		// Ejecuta archivo de control asociado
 		$basename = str_replace(array('.', '/', "\\", '>', '<'), '-', $accion);
@@ -117,8 +121,8 @@ class LocalApp {
 	 * Puede acceder a los recursos de esta clase desde $filename usando "$this".
 	 * Se ejecuta desde una función aislada para reducir inclusión de variables ajenas.
 	 */
-	private function incluir() {
-
+	private function incluir()
+	{
 		include_once $this->filename;
 	}
 
@@ -129,14 +133,13 @@ class LocalApp {
 	 * @param mixed $data Dato a codificar.
 	 * @return mixed Dato codificado.
 	 */
-	private function encode(mixed $data) {
-
+	private function encode(mixed $data)
+	{
 		if (is_array($data)) {
 			foreach ($data as $k => $v) {
 				$data[$k] = $this->encode($v);
 			}
-		}
-		elseif (is_string($data) && $data != '') {
+		} elseif (is_string($data) && $data != '') {
 			$data = htmlspecialchars($data);
 		}
 
@@ -151,8 +154,8 @@ class LocalApp {
 	 * @param mixed $defecto Valor a usar si el elemento requerido no existe en $this->data.
 	 * @return mixed Dato recuperado codificado.
 	 */
-	public function get(string $param, mixed $defecto = '') {
-
+	public function get(string $param, mixed $defecto = '')
+	{
 		return $this->encode($this->getRaw($param, $defecto));
 	}
 
@@ -164,8 +167,8 @@ class LocalApp {
 	 * @param mixed $defecto Valor a usar si el elemento requerido no existe en $this->data.
 	 * @return mixed Dato recuperado sin codificar.
 	 */
-	public function getRaw(string $param, mixed $defecto = '') {
-
+	public function getRaw(string $param, mixed $defecto = '')
+	{
 		if (isset($this->data[$param])) {
 			$defecto = $this->data[$param];
 		}
@@ -179,8 +182,8 @@ class LocalApp {
 	 * @param string $param Nombre del elemento a guardar.
 	 * @param mixed $valor Valor a guardar. Puede ser un entero, string, arreglo, etc.
 	 */
-	public function set(string $param, mixed $valor) {
-
+	public function set(string $param, mixed $valor)
+	{
 		$this->data[$param] = $valor;
 	}
 
@@ -193,8 +196,8 @@ class LocalApp {
 	 * @param string $fun Nombre de la función usada para construir la página (contenedor o layout sobre
 	 *   			      el que se publica el mensaje de error).
 	 */
-	public function mostrarError(string $mensaje_error, string $fun = '') {
-
+	public function mostrarError(string $mensaje_error, string $fun = '')
+	{
 		$this->data['mensaje-error'] = $mensaje_error;
 		$this->vista = 'error';
 		$this->ejecutarAccion('vista');
@@ -208,13 +211,13 @@ class LocalApp {
 	 * @param string $mensaje Mensaje a mostrar en la nueva página. Este mensaje se almacena temporalmente en
 	 *   	 	 	   	      la sesión PHP y se recupera de ahí por la nueva página.
 	 */
-	public function recargarIndex(string $accion = '', string $mensaje = '') {
-
+	public function recargarIndex(string $accion = '', string $mensaje = '')
+	{
 		$protocolo = 'http';
 		// https://stackoverflow.com/questions/1175096/how-to-find-out-if-youre-using-https-without-serverhttps
 		if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
 			|| $_SERVER['SERVER_PORT'] == 443
-			) {
+		) {
 			$protocolo = 'https';
 		}
 
@@ -236,7 +239,8 @@ class LocalApp {
 	 * Recupera mensaje preservado al recargar la página.
 	 * Una vez recuperado, el mensaje es eliminado de la sesión.
 	 */
-	public function mensajeSesionAnterior() {
+	public function mensajeSesionAnterior()
+	{
 
 		if (isset($_SESSION['reload-mensaje'])) {
 			$this->mensaje_sesion = $_SESSION['reload-mensaje'];
@@ -257,8 +261,8 @@ class LocalApp {
 	 *   					cuando el usuario recarga muchas veces la página de ingreso de datos.
 	 * @return string Llave de edición creada.
 	 */
-	public function crearLlaveEdicion(string $tabla, int $tarea_id = 0) {
-
+	public function crearLlaveEdicion(string $tabla, int $tarea_id = 0)
+	{
 		$llave = uniqid('E');
 		$_SESSION['edit-' . $tabla . '-' . $tarea_id] = $llave;
 
@@ -273,8 +277,8 @@ class LocalApp {
 	 * @param int $tarea_id Identificador del registro asociado (por defecto usa valor cero).
 	 * @return string Llave de edición.
 	 */
-	public function recuperarLlaveEdicion(string $tabla, int $tarea_id = 0) {
-
+	public function recuperarLlaveEdicion(string $tabla, int $tarea_id = 0)
+	{
 		$llave = '';
 		if (isset($_SESSION['edit-' . $tabla . '-' . $tarea_id])) {
 			$llave = $_SESSION['edit-' . $tabla . '-' . $tarea_id];
@@ -291,8 +295,8 @@ class LocalApp {
 	 * @param string $tabla Nombre de la tabla u otra palabra clave a usar para generar la llave.
 	 * @param int $tarea_id Identificador del registro asociado (por defecto usa valor cero).
 	 */
-	public function removerLlaveEdicion(string $tabla, int $tarea_id = 0) {
-
+	public function removerLlaveEdicion(string $tabla, int $tarea_id = 0)
+	{
 		if (isset($_SESSION['edit-' . $tabla . '-' . $tarea_id])) {
 			unset($_SESSION['edit-' . $tabla . '-' . $tarea_id]);
 		}
@@ -305,8 +309,8 @@ class LocalApp {
 	 * @param string $fun Función a usar para generar el texto final a pantalla, usualmente usada para
 	 * 		 	 		  "incrustar" el texto previamente capturado en un contenedor o layout.
 	 */
-	public function renderSalida(string $fun = '') {
-
+	public function renderSalida(string $fun = '')
+	{
 		$buffer = '';
 
 		while (ob_get_level() > 0) {
@@ -327,8 +331,8 @@ class LocalApp {
 	 *
 	 * @param string $fun Función a usar para generar el texto final a pantalla
 	 */
-	public function exit(string $fun = '') {
-
+	public function exit(string $fun = '')
+	{
 		$this->renderSalida($fun);
 
 		exit;

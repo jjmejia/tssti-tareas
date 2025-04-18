@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas / Vista para Listado de actividades.
  *
@@ -11,20 +12,19 @@ $titulos = $this->get('titulos', array());
 $menus = $this->get('menus', array());
 $titulo_pagina = $this->get('titulo-pagina', 'Actividades');
 
-// Menús disponibles para esta vista
-$menus = $this->get('menus', array(
-	'actividades/adicionar' => 'Nueva actividad',
-	'empleados/listar' => 'Lista de empleados'
-	));
-
 $enlaces_fila = $this->get('enlaces-fila', [
 	'actividades/cerrar' => 'Cerrar',
 	'actividades/editar' => 'Editar',
 	'!actividades/remover' => 'Eliminar' // El signo "!" indica que debe validar la acción antes de ejecutarla
-	]);
+]);
 
 $mensaje = $this->mensajeSesionAnterior();
-$mensaje .= $this->getRaw('mensaje-ok');
+if ($this->getRaw('mensaje-ok') != '') {
+	if ($mensaje != '') {
+		$mensaje .= '<br />';
+	}
+	$mensaje .= $this->getRaw('mensaje-ok');
+}
 if ($mensaje != '') {
 	$mensaje = "<p class=\"aviso\">{$mensaje}</p>";
 }

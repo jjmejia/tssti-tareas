@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas.
  * Emplea modelo básico sin usar URLs amigables para no requerir ajustes en .htaccess.
@@ -14,12 +15,14 @@ $app = new LocalApp();
 
 try {
 	// Conectarse a la base de datos
-	$app->conectarBDD(__DIR__ . '/lib/data/bdd.ini');
+	$app->conectarBDD(__DIR__ . '/data/bdd.ini');
 
 	// Validar acción solicitada
 	// (Acción por defecto: Listar actividades)
 	$accion = $app->post('accion');
-	if ($accion == '') { $accion = 'actividades/listar'; }
+	if ($accion == '') {
+		$accion = 'actividades/listar';
+	}
 
 	$app->setAccion($accion);
 
@@ -31,7 +34,6 @@ try {
 
 	// Genera salida a pantalla con el texto capturado hasta este punto.
 	$app->renderSalida('render_salida');
-}
-catch (Exception $e) {
+} catch (Exception $e) {
 	$app->mostrarError($e->getMessage(), 'render_salida');
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas / Soporte para Edición de empleados.
  * Puede ser invocado desde "empleados-adicionar.php" para adicionar registros nuevos.
@@ -17,7 +18,7 @@ if ($empleado_id <= 0 && $this->accion != 'empleados/adicionar') {
 $titulos = array(
 	'empleado_nombre' => 'Nombre',
 	'empleado_estado' => 'Estado'
-	);
+);
 
 // Errores encontrados
 $this->errores = array();
@@ -29,13 +30,19 @@ if ($this->post('M' . md5('_ok'), false) == $this->recuperarLlaveEdicion('emplea
 	foreach ($titulos as $columna => $nombre) {
 
 		// Ignora elementos sin nombre
-		if ($nombre == '') { continue; }
+		if ($nombre == '') {
+			continue;
+		}
 
 		$valor = $this->post('M' . md5($columna), false);
 		if ($valor !== false) {
 			// Validaciones especiales
 			if ($columna == 'empleado_estado') {
-				if ($valor > 0) { $valor = 1; } else { $valor = 0; }
+				if ($valor > 0) {
+					$valor = 1;
+				} else {
+					$valor = 0;
+				}
 			}
 			if ($valor !== '') {
 				$guardar[$columna] = $valor;
@@ -53,21 +60,23 @@ if ($this->post('M' . md5('_ok'), false) == $this->recuperarLlaveEdicion('emplea
 		// Guarda en base de datos
 		$info_respuesta = '';
 		if ($empleado_id <= 0) {
+			// Valida limite
+			$total_empleados = $this->bdd->count("empleado");
+			if ($total_empleados >= MAX_EMPLEADOS) {
+				$this->errores[] = "Adición no permitida: Se alcanzó el límite de empleados a registrar (" . MAX_EMPLEADOS . ")";
+			}
 			// Actualizar datos
-			if (!$this->bdd->bddAdicionar('empleado', $guardar)) {
+			elseif (!$this->bdd->bddAdicionar('empleado', $guardar)) {
 				$this->errores[] = 'No pudo adicionar empleado con los datos recibidos.';
-			}
-			else {
+			} else {
 				// Actualización exitosa. Recarga página
-				$info_respuesta = 'Empleado <b>' . htmlspecialchars($guardar['empleado_nombre']). '</b> adicionado con éxito';
+				$info_respuesta = 'Empleado <b>' . htmlspecialchars($guardar['empleado_nombre']) . '</b> adicionado con éxito';
 			}
-		}
-		else {
+		} else {
 			// Editar datos
 			if (!$this->bdd->bddEditar('empleado', $guardar, $empleado_id)) {
 				$this->errores[] = 'No pudo actualizar empleado con los datos recibidos.';
-			}
-			else {
+			} else {
 				$info_respuesta = 'Empleado <b>' . htmlspecialchars($guardar['empleado_nombre']) . '</b> actualizado con éxito';
 			}
 		}
@@ -83,17 +92,18 @@ if ($this->post('M' . md5('_ok'), false) == $this->recuperarLlaveEdicion('emplea
 // Consulta actividad solicitada
 $empleado_raw = array();
 if ($empleado_id > 0) {
-	$empleado_raw = $this->bdd->bddPrimerRegistro("SELECT empleado_id, empleado_nombre
+	$empleado_raw = $this->bdd->bddPrimerRegistro(
+		"SELECT empleado_id, empleado_nombre
 		FROM empleado
 		WHERE empleado_id = ?",
-		[ $empleado_id ]
-		);
+		[$empleado_id]
+	);
 }
 
 $formatos = array(
 	// 'item' => 'hidden',
 	'empleado_nombre' => 'text:100',
-	'empleado_estado' => [ 1 => 'Activo', 0 => 'Retirado' ],
+	'empleado_estado' => [1 => 'Activo', 0 => 'Retirado'],
 	'_ok' => 'hidden'
 );
 
@@ -103,8 +113,7 @@ foreach ($titulos as $t => $nombre) {
 	$valor = '';
 	if (isset($guardar[$t])) {
 		$valor = trim("{$guardar[$t]}");
-	}
-	elseif (isset($empleado_raw[$t])) {
+	} elseif (isset($empleado_raw[$t])) {
 		$valor = trim("{$empleado_raw[$t]}");
 	}
 	$empleados[$t] = $valor;

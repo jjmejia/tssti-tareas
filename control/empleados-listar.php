@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas / Soporte para Listado de empleados.
  *
@@ -6,13 +7,14 @@
  * @since 1.0 Creado en Marzo 2023
  */
 
-$tareas = $this->bdd->bddQuery("SELECT
+$tareas = $this->bdd->bddQuery(
+	"SELECT
 		empleado_id, empleado_nombre, empleado_estado, count(tareas_id) as actividades
 	FROM empleado
 		LEFT JOIN tareas ON (tareas_responsable = empleado_id)
 	GROUP BY empleado_id, empleado_nombre, empleado_estado
 	ORDER BY empleado_nombre ASC"
-	);
+);
 
 // $empleados = array();
 
@@ -42,6 +44,24 @@ foreach ($tareas as $k => $info) {
 	}
 }
 
+// Mensaje previo
+$mensaje = $this->get('mensaje-ok', '');
+if ($mensaje !== '') {
+	$mensaje .= '<br />' . PHP_EOL;
+}
+// Menús disponibles para esta vista
+$menus = array(
+	'empleados/adicionar' => 'Nuevo empleado',
+	'actividades/listar' => 'Lista de actividades'
+);
+
+$total_empleados = $this->bdd->count("empleado");
+if ($total_empleados >= MAX_EMPLEADOS) {
+	unset($menus['empleados/adicionar']);
+	$this->set('mensaje-ok', $mensaje . "Se alcanzó el límite de empleados a registrar (" . MAX_EMPLEADOS . ").");
+}
+
 // Preserva valores para uso de la vista
 $this->set('actividades', $actividades);
 $this->set('titulos', $titulos);
+$this->set('menus', $menus);

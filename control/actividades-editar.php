@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Administrador de tareas / Soporte para Edición de actividades.
  * Puede ser invocado desde "actividades-adicionar.php" para adicionar registros nuevos.
@@ -13,11 +14,15 @@ if ($tarea_id <= 0 && $this->accion != 'actividades/adicionar') {
 	mostrar_error('Los datos para la Actividad indicada no pudieron ser recuperados.');
 }
 
-$empleados_raw = $this->bdd->bddQuery("SELECT empleado_id, empleado_nombre
+$empleados_raw = $this->bdd->bddQuery(
+	"SELECT empleado_id, empleado_nombre
 	FROM empleado
 	WHERE empleado_estado > 0
 	ORDER BY empleado_nombre ASC"
-	);
+);
+
+$total_actividades = $this->bdd->bddQuery("SELECT count(tareas_id) as TOTAL FROM tareas");
+print_r($total_actividades);
 
 // Organiza la lista de empleados asociada por empleado_id
 $empleados = array(0 => '(No asignado)');
@@ -32,7 +37,7 @@ $titulos = array(
 	'tareas_responsable' => 'Responsable',
 	'tareas_fecha_deseada' => 'Fecha estimada',
 	'tareas_fecha_cierre' => 'Fecha en que se realizó'
-	);
+);
 
 // Errores encontrados
 $this->errores = array();
@@ -54,8 +59,7 @@ if ($this->post('M' . md5('_ok'), 0) == $this->recuperarLlaveEdicion('tareas', $
 					$segundos = strtotime($valor);
 					if ($segundos !== false) {
 						$valor = date('Y-m-d H:i:s', $segundos);
-					}
-					else {
+					} else {
 						$this->errores[] = 'Formato fecha no valido para <b>' . $nombre . '</b>';
 					}
 				}
@@ -75,21 +79,23 @@ if ($this->post('M' . md5('_ok'), 0) == $this->recuperarLlaveEdicion('tareas', $
 		// Guarda en base de datos
 		$info_respuesta = '';
 		if ($tarea_id <= 0) {
+			// Valida limite
+			$total_actividades = $this->bdd->count("tareas");
+			if ($total_actividades >= MAX_TAREAS) {
+				$this->errores[] = "Adición no permitida: Se alcanzó el límite de tareas a registrar (" . MAX_TAREAS . ")";
+			}
 			// Actualizar datos
-			if (!$this->bdd->bddAdicionar('tareas', $guardar)) {
+			elseif (!$this->bdd->bddAdicionar('tareas', $guardar)) {
 				$this->errores[] = 'No pudo adicionar actividad con los datos recibidos.';
-			}
-			else {
+			} else {
 				// Actualización exitosa. Recarga página
-				$info_respuesta = 'Actividad <b>' . htmlspecialchars($guardar['tareas_asunto']). '</b> adicionada con éxito';
+				$info_respuesta = 'Actividad <b>' . htmlspecialchars($guardar['tareas_asunto']) . '</b> adicionada con éxito';
 			}
-		}
-		else {
+		} else {
 			// Editar datos
 			if (!$this->bdd->bddEditar('tareas', $guardar, $tarea_id)) {
 				$this->errores[] = 'No pudo actualizar actividad con los datos recibidos.';
-			}
-			else {
+			} else {
 				$info_respuesta = 'Actividad <b>' . htmlspecialchars($guardar['tareas_asunto']) . '</b> actualizada con éxito';
 			}
 		}
@@ -105,12 +111,13 @@ if ($this->post('M' . md5('_ok'), 0) == $this->recuperarLlaveEdicion('tareas', $
 // Consulta actividad solicitada
 $tareas = array();
 if ($tarea_id > 0) {
-	$tareas = $this->bdd->bddPrimerRegistro("SELECT tareas.*, empleado_nombre
+	$tareas = $this->bdd->bddPrimerRegistro(
+		"SELECT tareas.*, empleado_nombre
 		FROM tareas
 		LEFT JOIN empleado ON (empleado_id = tareas_responsable)
 		WHERE tareas_id = ?",
-		[ $tarea_id ]
-		);
+		[$tarea_id]
+	);
 }
 
 $formatos = array(
@@ -129,8 +136,7 @@ foreach ($titulos as $t => $nombre) {
 	$valor = '';
 	if (isset($guardar[$t])) {
 		$valor = trim("{$guardar[$t]}");
-	}
-	elseif (isset($tareas[$t])) {
+	} elseif (isset($tareas[$t])) {
 		$valor = trim("{$tareas[$t]}");
 	}
 	// Consideraciones especiales
@@ -140,8 +146,7 @@ foreach ($titulos as $t => $nombre) {
 			if ($segundos !== false) {
 				$valor = date('Y-m-d H:i:s', $segundos);
 			}
-		}
-		else {
+		} else {
 			$valor = date('Y-m-d H:i:s');
 		}
 	}

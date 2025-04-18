@@ -37,7 +37,7 @@ Siga las siguientes instrucciones para ejecutar este proyecto correctamente:
 * Descargue el contenido de este repositorio en un directorio del servidor web (nombre sugerido: *tareas*).
 * Cree una base de datos en un servidor mariaDB o mySQL (nombre sugerido para la base de datos: *sti_tareas*).
 * Cree las tablas requeridas usando el SQL contenido en el archivo `bdd.sql`.
-* Realice una copia o renombre el archivo `lib/data/bdd.ini-ejemplo` con nombre `lib/data/bdd.ini`. Editelo
+* Realice una copia o renombre el archivo `data/bdd.ini-ejemplo` con nombre `data/bdd.ini`. Editelo
   con los datos de acceso a la base de datos. El archivo debe contener la siguiente información:
 	 * **servidor**: Path o nombre del servidor donde se encuentra el motor de base de datos.
 	 * **bdd**: Nombre dado a la base de datos.

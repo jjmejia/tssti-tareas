@@ -11,7 +11,7 @@
 /**
  * Visualización de menús principales.
  *
- * @param string $menus Arreglo de menús.
+ * @param array $menus Arreglo de menús.
  * @return string Texto HTML.
  */
 function mostrar_menus(array $menus) {
@@ -41,21 +41,22 @@ function mostrar_menus(array $menus) {
  * @param array $enlaces Arreglo de enlaces a incluir por cada fila.
  * @return string Texto HTML.
  */
-function mostrar_data(array $titulos, array $data, array $enlaces = null) {
+function mostrar_data(array $titulos, array $data, ?array $enlaces = null) {
 
 	$salida = '<table border="0" cellspacing="0">';
 	$codejs = array();
 	$primervez = true;
 
-	foreach ($data as $k => $fila) {
+	foreach ($data as $fila) {
 		if ($primervez) {
 			// Incluye el encabezado con el título de las columnas
 			$salida .= "<tr>";
 			foreach ($fila as $columna => $info) {
 				if (isset($titulos[$columna])) {
 					$columna = trim($titulos[$columna]);
-					if ($columna == '') { continue; }
 				}
+				// Ignora columna "clase" ya que se maneja con estilos
+				if ($columna == '' || strtolower($columna) === 'clase') { continue; }
 				$salida .= "<th>{$columna}</th>";
 			}
 			// Adiciona enlaces asociados a la fila
@@ -201,7 +202,7 @@ function editar_data(array $titulos, array $fila, array $formatos) {
  * @param array $listado Arreglo a usar para elementos de tipo "select".
  * @return string Texto HTML.
  */
-function editar_control(string $tipo, string $nombre, string $valor, array $listado = null) {
+function editar_control(string $tipo, string $nombre, string $valor, ?array $listado = null) {
 
 	$control = '';
 	$adicionales = false;
@@ -293,19 +294,39 @@ function render_salida(LocalApp $app, string &$buffer) {
 
 	$fecha = date('Y');
 	$correo = 'jjmejia@yahoo.com';
-	$buffer = "<!doctype html>
+	$footer = "<p class=\"pie\">Prueba técnica TS/STI {year} realizada por <b>John Mejía</b> (<a href=\"mailto:{$correo}\">{$correo}</a>)</p>";
+
+	// Adecuación temporal para publicación en Lekosdev.com
+	// Footer para desarrollo
+	$filename = __DIR__ . '/../data/footer-dev.html';
+	if (file_exists($filename)) {
+		$footer = file_get_contents($filename);
+	} else {
+		// Footer para producción
+		$filename = __DIR__ . '/../data/footer.html';
+		if (file_exists($filename)) {
+			$footer = file_get_contents($filename);
+		}
+	}
+	// Remplaza fecha (año)
+	$footer = str_replace('{year}', $fecha, $footer);
+
+	echo "<!doctype html>
 <html>
 	<head>
+		<meta charset=\"utf-8\">
+		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
+		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
 		<title>Gestión de actividades</title>
 	</head>
 	<link href=\"recursos/estilos/tareas.css\" rel=\"stylesheet\">
 <body>
+	<div class=\"tareas-container\">
 	{$buffer}
-<p class=\"pie\">Prueba técnica TS/STI {$fecha} realizada por <b>John Mejía</b> (<a href=\"mailto:{$correo}\">{$correo}</a>)</p>
+	</div>
+	{$footer}
 </body>
 </html>";
-
-	echo $buffer;
 
 	exit();
 }
