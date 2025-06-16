@@ -14,6 +14,4 @@
 	<p><?= $this->getRaw('mensaje-error') ?></p>
 </div>
 
-<p style="margin-top:30px"><b>Sugerencias:</b></p>
-
 <?= retornar_listado($this->accion) ?>

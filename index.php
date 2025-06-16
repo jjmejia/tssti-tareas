@@ -8,6 +8,10 @@
  * @since 1.0 Creado en Marzo 2023
  */
 
+// Ejecuta autoload de clases y funciones provistas por "miframe-commons"
+// (soporte opcional para inclusión en el Website LekosDev, comente esta línea si no se requiere)
+require_once $_SERVER['DOCUMENT_ROOT'] . '/miframe-autoload.php';
+
 require_once __DIR__ . '/lib/funciones.php';
 require_once __DIR__ . '/vista/vista-soporte.php';
 

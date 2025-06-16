@@ -271,14 +271,13 @@ function editar_control(string $tipo, string $nombre, string $valor, ?array $lis
  */
 function retornar_listado(string $accion) {
 
-	$salida = '<ul class="sugerencias">';
+	$salida = '';
 	if ($accion != '' && strpos($accion, 'empleados/') !== false) {
-		$salida = '<li><a href="index.php?accion=empleados/listar">Regresar al listado de empleados</a></li>';
+		$salida = '<p style="margin-top:30px"><b>Sugerencias:</b></p>' .
+			'<ul class="sugerencias">' .
+			'<li><a href="index.php?accion=empleados/listar">Regresar al listado de empleados</a></li>' .
+			'</ul>';
 	}
-	else {
-		$salida = '<li><a href="index.php">Regresar al listado de actividades</a></li>';
-	}
-	$salida .= '</ul>';
 
 	return $salida;
 }
@@ -295,21 +294,16 @@ function render_salida(LocalApp $app, string &$buffer) {
 	$fecha = date('Y');
 	$correo = 'jjmejia@yahoo.com';
 	$footer = "<p class=\"pie\">Prueba técnica TS/STI {year} realizada por <b>John Mejía</b> (<a href=\"mailto:{$correo}\">{$correo}</a>)</p>";
-
-	// Adecuación temporal para publicación en Lekosdev.com
-	// Footer para desarrollo
-	$filename = __DIR__ . '/../data/footer-dev.html';
-	if (file_exists($filename)) {
-		$footer = file_get_contents($filename);
-	} else {
-		// Footer para producción
-		$filename = __DIR__ . '/../data/footer.html';
-		if (file_exists($filename)) {
-			$footer = file_get_contents($filename);
-		}
-	}
 	// Remplaza fecha (año)
 	$footer = str_replace('{year}', $fecha, $footer);
+
+	// Footer para desarrollo
+	if (function_exists('registerVisitor')) {
+		/** @disregard P1010 Funciones del main */
+		registerVisitor('tareas');
+		/** @disregard P1010 Funciones del main */
+		$footer = lekosdev_footer();
+	}
 
 	echo "<!doctype html>
 <html>
