@@ -293,7 +293,7 @@ function render_salida(LocalApp $app, string &$buffer) {
 
 	$fecha = date('Y');
 	$correo = 'jjmejia@yahoo.com';
-	$footer = "<p class=\"pie\">Prueba técnica TS/STI {year} realizada por <b>John Mejía</b> (<a href=\"mailto:{$correo}\">{$correo}</a>)</p>";
+	$footer = "<div class=\"pie\">Prueba técnica TS/STI {year} realizada por <b>John Mejía</b> (<a href=\"mailto:{$correo}\">{$correo}</a>)</div>";
 	// Remplaza fecha (año)
 	$footer = str_replace('{year}', $fecha, $footer);
 
@@ -305,6 +305,9 @@ function render_salida(LocalApp $app, string &$buffer) {
 		$footer = lekosdev_footer();
 	}
 
+	// URL actual
+	$url_base = dirname($_SERVER['SCRIPT_NAME']);
+
 	echo "<!doctype html>
 <html>
 	<head>
@@ -312,8 +315,8 @@ function render_salida(LocalApp $app, string &$buffer) {
 		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
 		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
 		<title>Gestión de actividades</title>
+		<link href=\"{$url_base}/recursos/estilos/tareas.css\" rel=\"stylesheet\">
 	</head>
-	<link href=\"recursos/estilos/tareas.css\" rel=\"stylesheet\">
 <body>
 	<div class=\"tareas-container\">
 	{$buffer}

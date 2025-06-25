@@ -22,7 +22,6 @@ $empleados_raw = $this->bdd->bddQuery(
 );
 
 $total_actividades = $this->bdd->bddQuery("SELECT count(tareas_id) as TOTAL FROM tareas");
-print_r($total_actividades);
 
 // Organiza la lista de empleados asociada por empleado_id
 $empleados = array(0 => '(No asignado)');
@@ -44,7 +43,9 @@ $this->errores = array();
 
 // Valida si recibió valores para guardar
 // La validación con $this->recuperarLlaveEdicion() previene errores al recargar el navegador luego de guardar.
-if ($this->post('M' . md5('_ok'), 0) == $this->recuperarLlaveEdicion('tareas', $tarea_id)) {
+// NOTA: Previene validar como positivo el valor de vacio tanto en Post y llave de control
+$post_check = $this->post('M' . md5('_ok'), '');
+if ($post_check !== '' && $post_check === $this->recuperarLlaveEdicion('tareas', $tarea_id)) {
 	$guardar = array();
 	foreach ($titulos as $columna => $nombre) {
 		$valor = $this->post('M' . md5($columna), false);
