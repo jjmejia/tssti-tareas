@@ -25,7 +25,9 @@ $this->errores = array();
 
 // Valida si recibió valores para guardar
 // La validación con $this->recuperarLlaveEdicion() previene errores al recargar el navegador luego de guardar.
-if ($this->post('M' . md5('_ok'), false) == $this->recuperarLlaveEdicion('empleado', $empleado_id)) {
+// NOTA: Previene validar como positivo el valor de vacio tanto en Post y llave de control
+$post_check = $this->post('M' . md5('_ok'), '');
+if ($post_check !== '' && $post_check === $this->recuperarLlaveEdicion('empleado', $empleado_id)) {
 	$guardar = array();
 	foreach ($titulos as $columna => $nombre) {
 
